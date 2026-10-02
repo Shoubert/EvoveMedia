@@ -1,105 +1,126 @@
-package project5;
-import java.awt.*;
-import java.awt.event.*;
+package javaflix;
+
+// Rental items window: lists the store inventory, adds new movies / games / concerts,
+// and (when opened from a "Select a ..." button) picks an item for a customer.
+//
+// Rebuilt from the original (which did not compile), keeping its Add Movie / Add Game /
+// Add Concert buttons and item list.
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.util.List;
+import java.util.function.Consumer;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JList;
-import javax.swing.*;
-import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 
-public class Add_Item extends JFrame{
-        private JFrame add_item;
-        private JMenuBar menuBar;
-        private JMenu file, edit, tools, help;
-        private JButton [] jb;
-        private JPanel jp1, jp2;
-        private JScrollPane jsp;
-       private TextArea previewArea = new TextField(4, 60);
-        //pprivate TextField First_name = new TextField(14);
-       // private TextField Last_name = new TextField(14);
-        protected JList list;
-        private ActionListener e;
-        private Customer cust;
-        private Movie[] movie_array;
-        private  DVD dvds[ ] = new DVD[ 3 ];
-        private Game [] game_array;
-        private Concert [] concert_array;
-        public Add_Item(String name)
-        {
-        	//call super class construtors
-        	super(name);
-        	//set flow layout
-        	setLayout(new FlowLayout(FlowLayout.CENTER, 10, 60));
-        	//define menu object
-        
-        	add(previewArea);
-        add_item = new JFrame("Rental Items");
-        /**
-         * Adding menu bar to JavaFlix Frame
-         */
-          menuBar = new JMenuBar();
-          add_item.setJMenuBar(menuBar);
-          //adding menu files
-           file = new JMenu("File");
-           edit = new JMenu("Edit");
-           tools = new JMenu("Tools");
-           help = new JMenu("Help");
+public class Add_Item extends JFrame {
 
-           menuBar.add(file);
-           menuBar.add(edit);
-           menuBar.add(tools);
-           menuBar.add(help);
-            setMenuBar(bar);
-            add(textArea)
-            
-           /**
-            * adding Mnemonics for menu items
-            */
-            file.setMnemonic('F');
-            file.setMnemonic('E');
-            file.setMnemonic('T');
-            file.setMnemonic('H');
+    private final List<DVD> inventory;
+    private final Class<? extends DVD> filter;
+    private final DefaultListModel<DVD> model = new DefaultListModel<>();
+    private final JList<DVD> list = new JList<>(model);
 
-           file.add(new JMenuItem("New Customer")).setMnemonic('N');
-           file.add(new JMenuItem("Open")).setMnemonic('O');
-           file.addSeparator();
-           file.add(new JMenuItem("Print")).setMnemonic('P');
-           file.addSeparator();
-           file.add(new JMenuItem("Exit")).setMnemonic('x');
-  jb = new JButton[4];
-  jb[0]  = new JButton("Add Movie");
-  jb[0].setMnemonic('M');
-  jb[1]  = new JButton("Add Game");
-  jb[1].setMnemonic('G');
-  jb[2]  = new JButton("Add Concert");
-  jb[2].setMnemonic('C');
+    /**
+     * @param name     window title
+     * @param inventory the store inventory (shared with JavaFlix)
+     * @param filter   only show this kind of item (null = everything)
+     * @param onChoose called with the chosen item (null = browse/add only)
+     */
+    public Add_Item(String name, List<DVD> inventory, Class<? extends DVD> filter, Consumer<DVD> onChoose) {
+        super(name);
+        this.inventory = inventory;
+        this.filter = filter;
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        refresh();
 
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        JButton addMovie = new JButton("Add Movie");
+        addMovie.setMnemonic('M');
+        addMovie.addActionListener(e -> addMovie(false));
+        JButton addGame = new JButton("Add Game");
+        addGame.setMnemonic('G');
+        addGame.addActionListener(e -> addGame());
+        JButton addConcert = new JButton("Add Concert");
+        addConcert.setMnemonic('C');
+        addConcert.addActionListener(e -> addMovie(true));
+        buttons.add(addMovie);
+        buttons.add(addGame);
+        buttons.add(addConcert);
+        if (onChoose != null) {
+            JButton choose = new JButton("Choose");
+            choose.setMnemonic('h');
+            choose.addActionListener(e -> {
+                DVD item = list.getSelectedValue();
+                if (item == null) {
+                    return;
+                }
+                if (!item.isAvailable()) {
+                    JOptionPane.showMessageDialog(this, "That item is out of stock.");
+                    return;
+                }
+                onChoose.accept(item);
+                dispose();
+            });
+            buttons.add(choose);
+        }
 
+        setLayout(new BorderLayout());
+        add(new JScrollPane(list), BorderLayout.CENTER);
+        add(buttons, BorderLayout.SOUTH);
+        setSize(700, 450);
+        setLocationByPlatform(true);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    }
 
-  jp1 = new JPanel(new BorderLayout(1,2));
-  jp2 = new JPanel(new BorderLayout(1,3));
-  jp1.add( jb[0] );  jp1.add( jb[1] );
+    private void refresh() {
+        model.clear();
+        for (DVD d : inventory) {
+            if (filter == null || filter.isInstance(d)) {
+                model.addElement(d);
+            }
+        }
+    }
 
-  add_item.add(jp1, BorderLayout.NORTH);
-  add_item.add(jp2, BorderLayout.SOUTH);
+    private void addMovie(boolean concert) {
+        String title = JOptionPane.showInputDialog(this, "Title");
+        if (title == null || title.isBlank()) {
+            return;
+        }
+        String director = JOptionPane.showInputDialog(this, "Director");
+        String band = concert ? JOptionPane.showInputDialog(this, "Band") : null;
+        int year = askInt("Year");
+        int minutes = askInt("Minutes");
+        DVD item = concert
+                ? new Concert(band == null ? "" : band, title, director == null ? "" : director, year, minutes)
+                : new Movie(title, director == null ? "" : director, Movie.NR, year, minutes);
+        inventory.add(item);
+        refresh();
+    }
 
-list = new JList(movie_array);
-list = new JList(game_array);
-list = new JList(concert_array);
+    private void addGame() {
+        String title = JOptionPane.showInputDialog(this, "Title");
+        if (title == null || title.isBlank()) {
+            return;
+        }
+        String[] platforms = {"PS1", "DC", "PS2", "XBOX", "CUBE", "PS3", "X360", "WII"};
+        int p = JOptionPane.showOptionDialog(this, "Platform", "Add Game", JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE, null, platforms, platforms[0]);
+        inventory.add(new Game(title, p + 1, askInt("Year")));
+        refresh();
+    }
 
- jsp = new JScrollPane(list);
- jb[0].addActionListener(e);
- jb[0].addActionListener(e);
- this.getContentPane().add(list, BorderLayout.CENTER);
- this.getContentPane().add(jp1, BorderLayout.SOUTH);
- this.getContentPane().add(jp2, BorderLayout.SOUTH);
-
- /**
-  * Setting Jframe attributes
-  */
- add_item.setSize( 800, 700 );
- add_item.setVisible(true);
- add_item.setDefaultCloseOperation( add_item.DISPOSE_ON_CLOSE );
- }
-
-
-
-}//end
+    private int askInt(String what) {
+        String s = JOptionPane.showInputDialog(this, what);
+        try {
+            return s == null ? 0 : Integer.parseInt(s.trim());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+}

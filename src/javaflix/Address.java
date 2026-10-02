@@ -1,4 +1,4 @@
-package project3;
+package javaflix;
 
  /**
   * Shubert Charlotin<shoubetcharlotin@gmail.com>
@@ -15,7 +15,7 @@ package project3;
 
 
 
-  public class Address Address implements Comparable {
+  public class Address implements Comparable<Address> {
       /**
        * Method Address
        *
@@ -149,19 +149,23 @@ package project3;
       }
 
       public boolean equals(Object o) {
-             if ( o instanceof Address){
-              return this.toString().equals((( Address ) o).toString());
-     {
- 	          else
-     }
-               return false;
-     }
-     }
-      public int compareTo(Object o) {
-      return this.toString().equals((( Address ) o).toString());  
+          if (o instanceof Address) {
+              return this.toString().equals(o.toString());
+          }
+          return false;
+      }
+
+      @Override
+      public int hashCode() {
+          return toString().hashCode();
+      }
+
+      public int compareTo(Address o) {
+          return this.toString().compareTo(o.toString());
       }
 
       //to String
-     
+      public String toString() {
+          return number + " " + streetN + "\n" + ct + ", " + st + " " + zip;
+      }
   }
-}

@@ -6,7 +6,7 @@ Public Class StadiumSeats
         Dim intClassC As Integer
         Const decClassA_RATE As Decimal = 15
         Const decClassB_RATE As Decimal = 12
-        Const decClassB_RATE As Decimal = 9
+        Const decClassC_RATE As Decimal = 9
         Dim RevenueA As Decimal
         Dim RevenueB As Decimal
         Dim RevenueC As Decimal
@@ -16,7 +16,7 @@ Public Class StadiumSeats
         intClassC = txtClassB.Text
         txtRevenueA.Text = intClassA * decClassA_RATE
         txtRevenueB.Text = intClassB * decClassB_RATE
-        txtRevenueC.Text = intClassC * decClassB_RATE
+        txtRevenueC.Text = intClassC * decClassC_RATE
         txtTotalRevenue.Text = txtClassA.Text + txtClassB.Text + txtClassC.Text
 
 

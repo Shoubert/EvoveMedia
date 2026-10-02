@@ -1,4 +1,4 @@
-package project3;
+package javaflix;
 
 
   /**
@@ -17,7 +17,7 @@ package project3;
   /**
    * Method Customers
    */
-  public class Customer {
+  public class Customer implements Comparable<Customer> {
 
       private char middle; // store middle initials
       private Address address; // customer's address
@@ -54,7 +54,7 @@ package project3;
       public Customer(String first, char middle, String last, Address addr) {
           this();
           setMiddle(middle);
-          setAddress( address );
+          setAddress( addr == null ? new Address() : addr );
           setFirst(first);
           setLast(last);
           /**
@@ -72,6 +72,10 @@ package project3;
        * @param last String
        * @param addr Address
        */
+
+     public Customer(String first, String last) {
+          this(first, '\0', last, new Address());
+      }
 
      public Customer(String first, String last, Address addr) {
           this(first, '\0', last, addr);
@@ -159,33 +163,32 @@ package project3;
        * @return boolean
        */
       public boolean equals(Object o) {
-         Customer temp = (Customer) o;
-          if (this.first == (temp.first) && this.middle == (temp.middle) &&
-              this.last == (temp.last) && this.address == (temp.address))
-              return true;
-
-         else
+          if (!(o instanceof Customer)) {
               return false;
+          }
+          Customer temp = (Customer) o;
+          return first.equals(temp.first) && middle == temp.middle &&
+                 last.equals(temp.last) && address.equals(temp.address);
       }
+
+      @Override
+      public int hashCode() {
+          return java.util.Objects.hash(first, middle, last, address);
+      }
+
      /**
-       * compare each customer data to see if they match
-       * @param o Object
+       * order customers by last name, then first name, then middle initial
+       * @param o Customer
        * @return int
        */
-      public int compareTo(Object o) {
-          Customer temp = (Customer) o; // explicit casting
-         if (this.first == (temp.first))
-              return 1;
-          else if (this.middle == (temp.middle))
-             return 1;
-          else if (this.last == (temp.last))
-              return 1;
-          else if (this.address == (temp.address))
-             return 1;
-
-          else return 0;
+      public int compareTo(Customer o) {
+          int c = last.compareToIgnoreCase(o.last);
+          if (c == 0) {
+              c = first.compareToIgnoreCase(o.first);
+          }
+          return c != 0 ? c : Character.compare(middle, o.middle);
       }
-      /**
+     /**
        *  return customer info
        * @return String
        */

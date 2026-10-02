@@ -1,4 +1,4 @@
-package project4;
+package javaflix;
 /* Shubert Charlotin<kgshuby@msn.com>
   * CMP 218 M1
   * Project 2: Movie rental
@@ -9,59 +9,41 @@ package project4;
   *  this class is to store movies for a video store rental
   *  also all the data for a movie is store in this class,
   *  such as the movie title, director, rating, a movie length and the year the movie was made .
-  */
-
-  /**
-  * Method Movie
-  * instance variables
   *
+  *  Title, year and availability are inherited from DVD (they used to be re-declared here,
+  *  which hid the DVD fields).
   */
- public class Movie extends DVD implements Comparable {
+ public class Movie extends DVD implements Comparable<Movie> {
 
-     private String title; // store movie title
      private String director; // store movie director
      private int rating; // store movie rating
-     private int year; // store year of a movie
      private int min; // store number of minute
-     private boolean available; // store avalablelity
-     private static int count = 0; //  how many  movie object
-   // constant for various MPAA ratings
 
+   // constant for various MPAA ratings
+     public static final int NR = 0; //store rating NR
      public static final int G = 1; //store  rating G
      public static final int PG = 2; //store  rating PG
-     public static final int PG13 = 3; //store  rating G
+     public static final int PG13 = 3; //store  rating PG-13
      public static final int R = 4; // store rating R
-     public static final int MC17 = 5; //store rating MC17
-     public static final int NR = 0; //store rating NR
+     public static final int NC17 = 5; //store rating NC-17
 
-     private int MovId; // store movie id
  /**
   * default constructor
   * instance variables are initialize to their default value
-  * instant variables: Year = 1935; min=0  director = ""; rating = false; moviD = ++count; title = "";
   */
   public Movie() {
-         year = 0;
+         super();
          min = 0;
          director = "No Director";
-         title = "No Title";
-         rating = NR; // set rating to false
-         available = false; // set available to false
-         MovId = ++count;
+         rating = NR;
      }
 
      /**
-      * parameterized construstor
-      * instance variables are set according to their parameters
-     */
-     /**
      * parameterized constructor
-     * set year, and minute in year min calling each of the set methods define
-     * movie must have non-blank titlese and directors
+     * set title, director, rating, year and minutes by calling each of the set methods
+     * movie must have non-blank titles and directors to be available
     */
-
      public Movie(String title, String director, int rating, int year, int min) {
-
          this();
          setTitle(title);
          setDirector(director);
@@ -69,56 +51,35 @@ package project4;
          setYear(year);
          setMin(min);
 
-         if (! ( title.equals( "No Title")||director.equals("No director")|| rating == -1 || year == -1) )
-             available = true;
-
+         available = !(this.title.equals("No Title") || this.director.equals("No Director") || this.year == 0);
      }
-
-     /**
-      * mutators
-      * set title
-      * @param t String
-      */
-     public void setTitle(String t) {
-          if (t.trim().length() > 0)
-              title = t;
-      }
 
      /**
       * set director
       * @param d String
       */
      public void setDirector(String d) {
-     StringTokenizer st = new StringTokenizer(d);
-     if (t.trim().length() > 0)
-         director = d;
+         if (d != null && d.trim().length() > 0)
+             director = d.trim();
      }
 
      /**
-      * set rating
-      * @param rating String
+      * set rating (ignored unless it is one of the rating constants)
+      * @param r int
       */
-     public void setRating(int rating) {
-         switch (rating){
-      case G:
-      case PG:
-      case PG13:
-      case R:
-      case NC17:
-      case NR:
-          rating = r;
-          break;
+     public void setRating(int r) {
+         switch (r) {
+             case NR:
+             case G:
+             case PG:
+             case PG13:
+             case R:
+             case NC17:
+                 rating = r;
+                 break;
+             default:
+                 break;
          }
-     }
-
-     /**
-      * set year
-      * @param  int y
-      */
-     public void setYear(int y) {
-         if (year >= 1935 && year <= 2007)
-             year = y;
-
      }
 
      /**
@@ -130,40 +91,15 @@ package project4;
              min = m;
      }
 
-     /**
-     * set available
-     * @param av boolean
-     */
-     public void setAvailable(boolean a) {
-        available = a;
-
-    }
-
     /**
       * Accessors
       */
-     public String getTitle() {
-         return title;
-       }
-
-     /**
-      * return director
-      */
-
      public String getDirector() {
          return director;
      }
-     public int getRating()
-     {
-     return rating;
-     }
-    
-     /**
-      *  return the year
-      * @return int
-     */
-     public int getYear() {
-         return year;
+
+     public int getRating() {
+         return rating;
      }
 
      /**
@@ -175,73 +111,61 @@ package project4;
      }
 
      /**
-      * return movie id
+      * return movie id (the DVD inventory id)
       * @return int
       */
      public int getMovId() {
-         return MovId;
+         return getId();
      }
-     public boolean isAvailable(){
-     return available;
-     }
+
      /* private helper methods, to make things display nicely*/
      private String showRating(){
-     if ( rating == NR )
-         return "No Rating";
-     else if ( rating == G )
-         return "Rating G";
-     else if ( rating == PG )
-         return "Rating PG";
-     else if ( rating == PG13 )
-         return "Rating PG13";
-     else if ( rating == R )
-         return "Rating R";
-     else return "Rated NC-17";
+         switch (rating) {
+             case G: return "Rating G";
+             case PG: return "Rating PG";
+             case PG13: return "Rating PG13";
+             case R: return "Rating R";
+             case NC17: return "Rated NC-17";
+             default: return "No Rating";
+         }
      }
+
      /**
-      *
-     * @param o Object
-      * @return boolean
+      * running time as h:mm
       */
       public String toHours(){
-      	int hours = 0;
-      	int m = min;
-      	while( m >= 60){
-      		hours ++;
-      		m -= 60;
-      	}
-      	return hours + ":" + ( m > 10 ? m : "0" + m );
+          int hours = min / 60;
+          int m = min % 60;
+          return hours + ":" + ( m >= 10 ? String.valueOf(m) : "0" + m );
     }
+
       /* Overrides other Object class */
      public boolean equals(Object o) {
-         Movie m = ( Movie ) o;
-         if(this.title == ( m.title ) && this.director == ( m.director ) &&
-             this.rating == ( m.rating ) && this.year == ( m.year ) &&
-             this.min == ( m.min ))
-             return true;
-
-         else
+         if (!(o instanceof Movie)) {
              return false;
+         }
+         Movie m = ( Movie ) o;
+         return title.equals(m.title) && director.equals(m.director) &&
+                rating == m.rating && year == m.year && min == m.min;
      }
-    
-     // method to return the title, director, rating, min, year, and movie availabilities
-     /* display Object's data*/
-          
-     public String toString() {
 
+     @Override
+     public int hashCode() {
+         return java.util.Objects.hash(title, director, rating, year, min);
+     }
+
+     /* display Object's data*/
+     public String toString() {
          return id + ": " + title + "  Directed by " + director +  "\n " + showRating() + " " + year + " " + toHours() + "\n" + ( available ? "In" : "Out of") + " stock. ";
-           }
+     }
+
     /**
-      *  method to compare two movies
-      * @param o Object
+      *  compare two movies by title, then year
+      * @param m Movie
       * @return int
     */
-     public int compareTo(Object o) {
-         Movie m = (Movie) o; // explicit casting
-        int t = title.compareTo( m.title );
-         if ( t == 0 )
-             return year -m.year;
-             else 
-             return t;
+     public int compareTo(Movie m) {
+         int t = title.compareTo( m.title );
+         return t != 0 ? t : Integer.compare(year, m.year);
      }
   }//end
