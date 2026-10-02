@@ -8,7 +8,7 @@ package exercises;
  * @author (Shoubert charlotin) 
  * @version (Assignment 13)
  */
-public class Inventory implements Comparable
+public class Inventory implements Comparable<Inventory>
 {
     // instance variables - replace the example below with your own
     public String InventID; // InventoryID the id unique and used as the key=field
@@ -117,8 +117,20 @@ public class Inventory implements Comparable
      */
     public boolean equals(Object otherItem)
     {
+        if (!(otherItem instanceof Inventory))
+        {
+            return false;
+        }
         Inventory temp = (Inventory)otherItem;
         return (InventID.equals(temp.InventID));
+    }
+
+    /**
+     * hashCode consistent with equals (same inventory id -> same hash)
+     */
+    public int hashCode()
+    {
+        return InventID.hashCode();
     }
     /**
      * to String method--- creates and returns a string which represent the state of the object
@@ -126,23 +138,19 @@ public class Inventory implements Comparable
      */
     public String toString()
     {
-        return "Inventory ID:" + InventID + "Quantity:" + Quantity + "Price:" + price; 
+        return String.format("Inventory ID: %s  Quantity: %d  Price: $%.2f", InventID, Quantity, price);
     }
     
     /**
-     * CompareTo() method--- checks for the quality of the objects
-     * if they are equal, return '0' else return '-1'
-     * @param compareItem Object
-     * @return Int
+     * CompareTo() method--- orders items by inventory id (the key field):
+     * negative if this id sorts first, 0 if the ids are equal, positive otherwise.
+     * (It used to compare the strings with ==, which is never true for copies, so it always
+     * returned -1 and sorting did nothing useful.)
+     * @param compareItem Inventory
+     * @return int
      */
-    public int compareTo(Object compareItem)
+    public int compareTo(Inventory compareItem)
     {
-        Inventory Invent = (Inventory) compareItem;
-        if (this.getID() == Invent.getID())
-        {
-            return 0;
-            
-        }
-        return -1;
+        return InventID.compareTo(compareItem.InventID);
     }
 }

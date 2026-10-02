@@ -16,7 +16,7 @@ java -cp out javaflix.JavaFlix
 | Folder | Contents |
 |---|---|
 | `src/javaflix/` | JavaFlix rental app: `Customer`, `Address`, `DVD` → `Movie` → `Concert`, `Game`, `FlixQueue` (3-movie queue), `JavaFlix` (staff GUI), `Add_Item` (inventory window), `SmokeTest` |
-| `src/exercises/` | Console exercises: `Assignmemt09`, `NumFile` (reads `Number.txt`), `Temperature`, `Inventory` |
+| `src/exercises/` | Console exercises: `Assignmemt09`, `NumFile` (reads `Number.txt`), `Temperature`, `Inventory` + `InventoryDemo` (`java -cp out exercises.InventoryDemo`) |
 | `vb/` | VB.NET Windows Forms (stadium seats, MPH, Roman numerals). Source only: there's no `.vbproj`, so add the files to a Visual Studio Windows Forms project to run them. |
 
 GitHub Actions (`.github/workflows/java.yml`) compiles the Java and runs the smoke test on every push.
