@@ -1,4 +1,4 @@
-package project5;
+package javaflix;
 
 
 /* Shubert Charlotin<kgshuby@msn.com>
@@ -58,7 +58,7 @@ public abstract class DVD {
 
     // set year
     public void setYear(int y) {
-        if (year >= 1935 && year <= 2007) {
+        if (y >= 1935 && y <= java.time.Year.now().getValue()) {
             year = y;
         }
 

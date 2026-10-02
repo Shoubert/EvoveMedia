@@ -1,3 +1,5 @@
+package exercises;
+
 
 /**
  *  class Assignmemt09.

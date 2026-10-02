@@ -1,3 +1,5 @@
+package exercises;
+
 
 /**
  * Write a description of class Numbers here.

@@ -1,4 +1,4 @@
-package project5;
+package javaflix;
 
 /* Shubert Charlotin<kgshuby@msn.com>
  * CMP 218 M1
@@ -12,7 +12,7 @@ package project5;
  * this class also extend the DVD class
  *
  */
-public class Game extends DVD implements Comparable {
+public class Game extends DVD implements Comparable<Game> {
 
 
     /**
@@ -159,8 +159,7 @@ public class Game extends DVD implements Comparable {
     }
 
     // compare each platform according to their values
-    public int compareTo(Object o) {
-        Game m1 = (Game) o;
+    public int compareTo(Game m1) {
         if (this.getTitle().compareTo(m1.getTitle()) > 0) {
             return 1;
         } else
@@ -189,6 +188,11 @@ public class Game extends DVD implements Comparable {
      * equauls
      * Overridden equals method from Object
      */
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(getTitle(), getPlatform(), getYear());
+    }
+
     public boolean equals(Object o) {
         if (o instanceof Game) {
             Game g = (Game) o;

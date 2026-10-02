@@ -1,3 +1,5 @@
+package exercises;
+
 
 /**
  * <P>Title: Inventory here</p>
