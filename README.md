@@ -9,7 +9,7 @@ A  Place to hold my projects
 ## Build and run (JDK 17+)
 
 ```bash
-./build.sh            # or: powershell -File build.ps1   (compiles everything, runs the 19-check smoke test)
+./build.sh            # or: powershell -File build.ps1   (compiles everything, runs the smoke tests)
 java -cp out javaflix.JavaFlix
 ```
 
@@ -17,6 +17,7 @@ java -cp out javaflix.JavaFlix
 |---|---|
 | `src/javaflix/` | JavaFlix rental app: `Customer`, `Address`, `DVD` → `Movie` → `Concert`, `Game`, `FlixQueue` (3-movie queue), `JavaFlix` (staff GUI), `Add_Item` (inventory window), `SmokeTest` |
 | `src/exercises/` | Console exercises: `Assignmemt09`, `NumFile` (reads `Number.txt`), `Temperature`, `Inventory` + `InventoryDemo` (`java -cp out exercises.InventoryDemo`) |
+| `src/movierental/` | Assignment 08 movie rental: `Movie` → `Action`, `Comedy`, `Drama` with per-day late fees ($3.00 / $2.50 / $2.00), `Assignment8` (console, asks for days late: `java -cp out movierental.Assignment8`), `SmokeTest` |
 | `vb/` | VB.NET Windows Forms (stadium seats, MPH, Roman numerals). Source only: there's no `.vbproj`, so add the files to a Visual Studio Windows Forms project to run them. |
 
 GitHub Actions (`.github/workflows/java.yml`) compiles the Java and runs the smoke test on every push.

@@ -5,4 +5,7 @@ if (Test-Path out) { Remove-Item -Recurse -Force out }
 javac -d out (Get-ChildItem -Recurse src -Filter *.java | ForEach-Object FullName)
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 java "-Djava.awt.headless=true" -cp out javaflix.SmokeTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+java -cp out movierental.SmokeTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 Write-Host "Run the GUI: java -cp out javaflix.JavaFlix"

@@ -5,4 +5,5 @@ cd "$(dirname "$0")"
 rm -rf out
 javac -d out $(find src -name "*.java")
 java -Djava.awt.headless=true -cp out javaflix.SmokeTest
+java -cp out movierental.SmokeTest
 echo "Run the GUI: java -cp out javaflix.JavaFlix"
