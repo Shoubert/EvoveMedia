@@ -31,6 +31,14 @@ public final class SmokeTest {
         check(new Movie(comedy).equals(comedy), "copy equals original (same ID)");
         check(!comedy.equals(new Drama("D", "G", 2, 7)), "different IDs are different movies");
 
+        MovieRentalUI.RentalTableModel table = new MovieRentalUI.RentalTableModel();
+        check(table.add(comedy) && table.add(new Action("A", "R", 1, 3)), "UI table adds rentals");
+        check(!table.add(new Drama("Dup", "G", 123456789, 2)), "UI table rejects a duplicate ID");
+        table.setDaysLate(2);
+        check(table.totalFees() == 11.0 && table.getValueAt(1, 6).equals("$6.00"), "UI total and row fee follow days late");
+        table.remove(0);
+        check(table.getRowCount() == 1 && table.totalFees() == 6.0, "UI return removes the row and its fee");
+
         System.out.println(passed + " checks passed");
     }
 }
